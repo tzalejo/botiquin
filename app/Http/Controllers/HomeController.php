@@ -13,13 +13,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
 use SoapClient;
-Use App\Mail\MensajeContacto;
+use App\Mail\MensajeContacto;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
-
 
 class HomeController extends Controller
 {
@@ -42,8 +41,6 @@ class HomeController extends Controller
         $sucursalesTurno = [];
         $arrSucursalesTurnoSiguiente = [];
         if (isset($turnos)) {
-
-
             $sucursalesTurno = $turnos->getSucursales->take(2);
 
             //Primera Forma Para obtener Dias siguientes
@@ -61,8 +58,15 @@ class HomeController extends Controller
             $fechasSiguiente1 = date('Y-m-d', strtotime('+1 days'));
             $fechasSiguiente2 = date('Y-m-d', strtotime('+2 days'));
             $fechasSiguiente3 = date('Y-m-d', strtotime('+3 days'));
-            $TurnoSiguientes =  Turno::where('fecha_turno', '=', $fechasSiguiente1)->orWhere('fecha_turno', '=', $fechasSiguiente2)->orWhere('fecha_turno', '=', $fechasSiguiente3)->get();
-            $arrSucursalesTurnoSiguiente = array();
+            $TurnoSiguientes = Turno::where(
+                'fecha_turno',
+                '=',
+                $fechasSiguiente1
+            )
+                ->orWhere('fecha_turno', '=', $fechasSiguiente2)
+                ->orWhere('fecha_turno', '=', $fechasSiguiente3)
+                ->get();
+            $arrSucursalesTurnoSiguiente = [];
 
             foreach ($TurnoSiguientes as $turno) {
                 // array_push($arrSucursalesTurnoSiguiente = $turno->getSucursales->take(3));
@@ -75,11 +79,19 @@ class HomeController extends Controller
             }
         }
         //dd($arrSucursalesTurnoSiguiente);
-        $tiempo= $this->tiempo();
-        $maxt= $tiempo['maxt'];
-        $mint= $tiempo['mint'];
+        $tiempo = $this->tiempo();
+        $maxt = $tiempo['maxt'];
+        $mint = $tiempo['mint'];
 
-        return view('publico.contenidoPrincipal', compact('sucursalesTurno', 'arrSucursalesTurnoSiguiente','maxt','mint'));
+        return view(
+            'publico.contenidoPrincipal',
+            compact(
+                'sucursalesTurno',
+                'arrSucursalesTurnoSiguiente',
+                'maxt',
+                'mint'
+            )
+        );
     }
 
     /**
@@ -106,14 +118,24 @@ class HomeController extends Controller
         $variablesContacto = $request;
         // Si la validacion es se procede a enviar el mail al administrador de Tubotiquín
         $emailAdministrador = DB::table('usuario')
-            ->join('usuario_roles', 'usuario.id_usuario', '=', 'usuario_roles.usuario_id')
+            ->join(
+                'usuario_roles',
+                'usuario.id_usuario',
+                '=',
+                'usuario_roles.usuario_id'
+            )
             ->join('roles', 'usuario_roles.rol_id', '=', 'roles.id_rol')
             ->where('roles.slug_rol', '=', 'es-administrador')
             ->select('email')
             ->get();
-        Mail::to($emailAdministrador)->send(new MensajeContacto($variablesContacto));
+        Mail::to($emailAdministrador)->send(
+            new MensajeContacto($variablesContacto)
+        );
 
-        return redirect(route('home'))->with('mensajeEnviado', 'Su mensaje fue enviado con exito, a la brevedad le estaremos respondiendo. Gracias por su consulta');
+        return redirect(route('home'))->with(
+            'mensajeEnviado',
+            'Su mensaje fue enviado con exito, a la brevedad le estaremos respondiendo. Gracias por su consulta'
+        );
     }
 
     /**
@@ -132,7 +154,6 @@ class HomeController extends Controller
             'arrayObraSociales' => $arrayObraSociales,
         ]);
     }
-
 
     /**
      * Funcion que lista todas las farmacias cargdas de turno.
@@ -153,35 +174,52 @@ class HomeController extends Controller
         //         ->orWhere('fecha_turno', '=', $fechasSiguiente3)->orWhere('fecha_turno', '=', $fechasSiguiente4)
         //         ->orWhere('fecha_turno', '=', $fechasSiguiente5)->orWhere('fecha_turno', '=', $fechasSiguiente6)->get();
         // } else {}
-        $arrayTurnos =  Turno::orderBy('fecha_turno','ASC')->where('fecha_turno', '>=', date('Y-m-d'))->FechaTurno($request->busquedaTurno)->get();
-        $arrSucursalDia = array();
-        $arregloSucursalTurnodia = array();
+        $arrayTurnos = Turno::orderBy('fecha_turno', 'ASC')
+            ->where('fecha_turno', '>=', date('Y-m-d'))
+            ->FechaTurno($request->busquedaTurno)
+            ->get();
+        $arrSucursalDia = [];
+        $arregloSucursalTurnodia = [];
 
-        foreach ($arrayTurnos as  $turno) {
+        foreach ($arrayTurnos as $turno) {
             foreach ($turno->getSucursales as $sucursal) {
                 $originalDate = $turno->fecha_turno;
-                $newDate = date("d/m/Y", strtotime($originalDate));
-                $arrSucursalDia = ["sucursal" => $sucursal, "diaTurno" => $newDate];
+                $newDate = date('d/m/Y', strtotime($originalDate));
+                $arrSucursalDia = [
+                    'sucursal' => $sucursal,
+                    'diaTurno' => $newDate,
+                ];
                 array_push($arregloSucursalTurnodia, $arrSucursalDia);
             }
         }
 
         $currentPage = $request->page;
-        if($request->page == null){
+        if ($request->page == null) {
             $currentPage = 1;
         }
         $perPage = 6;
 
-        $currentElements = array_slice($arregloSucursalTurnodia, ($perPage * ($currentPage - 1)), $perPage);
+        $currentElements = array_slice(
+            $arregloSucursalTurnodia,
+            $perPage * ($currentPage - 1),
+            $perPage
+        );
         // dd($currentElements);
-        $arregloSucursalTurnodia = new LengthAwarePaginator($currentElements, count($arregloSucursalTurnodia), $perPage, $currentPage);
+        $arregloSucursalTurnodia = new LengthAwarePaginator(
+            $currentElements,
+            count($arregloSucursalTurnodia),
+            $perPage,
+            $currentPage
+        );
         $arregloSucursalTurnodia->setPath('turnossiguientes');
         // dd($arrSucursalDiaCompleto);
-        return view('publico.verSucursalProximosDias', compact('arregloSucursalTurnodia'));
+        return view(
+            'publico.verSucursalProximosDias',
+            compact('arregloSucursalTurnodia')
+        );
     }
     public function tiempo()
     {
-
         try {
             // $opts = array('http' => array('user_agent' => 'PHPSoapClient') );
 
@@ -277,20 +315,15 @@ class HomeController extends Controller
             //          $col[]= $value;
             // }
 
-            $maxt = 8 //$col[0]['value'];
-            $mint = 1 //$col[1]['value'][0];
-
-
+            $maxt = 8; //$col[0]['value'];
+            $mint = 1; //$col[1]['value'][0];
         } catch (Exception $e) {
-           echo $e->getMessage();
+            echo $e->getMessage();
             $maxt = '?';
             $mint = '?';
         }
 
-        $datos = array( 'maxt'=>$maxt, 'mint'=>$mint );
+        $datos = ['maxt' => $maxt, 'mint' => $mint];
         return $datos;
-
-
     }
-
 }
