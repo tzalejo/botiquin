@@ -31,13 +31,13 @@ class HomeController extends Controller
     public function index()
     {
         //
-        // 
+        //
         // if (\auth()->user()->getRoles->contains('slug_rol','es-administrador')) {
         //     Gate::authorize('esAdmin');
         //     return redirect('/administrador');
         // }
         $hoy = date('Y-m-d');
-        // dd($hoy); 
+        // dd($hoy);
         $turnos = Turno::where('fecha_turno', '=', $hoy)->first();
         $sucursalesTurno = [];
         $arrSucursalesTurnoSiguiente = [];
@@ -47,7 +47,7 @@ class HomeController extends Controller
             $sucursalesTurno = $turnos->getSucursales->take(2);
 
             //Primera Forma Para obtener Dias siguientes
-            //La clase DatePeriod 
+            //La clase DatePeriod
             // (PHP 5 >= 5.3.0, PHP 7)
             // Representa un período de fechas.
             // Un período de fechas permite la iteración sobre un conjunto de fechas y horas, repitiéndose a intervalos regulares durante un período dado.
@@ -83,7 +83,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Funcion que invoca el formulario de contacto del menu del home 
+     * Funcion que invoca el formulario de contacto del menu del home
      */
     public function emailContacto()
     {
@@ -117,7 +117,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Funcion que lista los datos de la farmacia y sucursal (solo una) de turno del home. 
+     * Funcion que lista los datos de la farmacia y sucursal (solo una) de turno del home.
      * Se llama en el boton "ver sucursal" de los cards
      */
     public function verSucursalTurnoHoy(Request $request)
@@ -181,112 +181,112 @@ class HomeController extends Controller
     }
     public function tiempo()
     {
- 
+
         try {
-            $opts = array('http' => array('user_agent' => 'PHPSoapClient') );
-        
-            $context = stream_context_create($opts);
-        
-            $wsdlUrl = 'https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php?wsdl';
-            // $wsdlUrl = 'http://toolbox.webservice-energy.org/TOOLBOX/WSDL/AIP3_PV_Impact/AIP3_PV_Impact.wsdl';
-            // $wsdlUrl = 'http://toolbox.webservice-energy.org/TOOLBOX/WSDL/AIP3_PV_Impact/AIP3_PV_Impact.wsdl';
-        
-            $soapClientOptions = array('stream_context' => $context, 'cache_wsdl' => WSDL_CACHE_NONE);
-        
-            $client = new SoapClient($wsdlUrl, $soapClientOptions);
-            // var_dump( $client->__getFunctions() ) ;
-        
-            $weatherParameters = array(
-                "maxt" => true,
-                "mint" => true,
-                "temp" => false,
-                "dew" => false,
-                "pop12" => false,
-                "qpf" => false,
-                "sky" => false,
-                "snow" => false,
-                "wspd" => false,
-                "wdir" => false,
-                "wx" => false,
-                "waveh" => false,
-                "icons" => true,
-                "rh" => false,
-                "appt" => false,
-                "incw34" => false,
-                "incw50" => false,
-                "incw64" => false,
-                "cumw34" => false,
-                "cumw50" => false,
-                "cumw64" => false,
-                "conhazo" => false,
-                "ptornado" => false,
-                "phail" => false,
-                "ptstmwinds" => false,
-                "pxtornado" => false,
-                "pxhail" => false,
-                "pxtstmwinds" => false,
-                "ptotsvrtstm" => false,
-                "pxtotsvrtstm" => false,
-                "wgust" => false,
-                "critfireo" => false,
-                "dryfireo" => false,
-                "tmpabv14d" => false,
-                "tmpblw14d" => false,
-                "tmpabv30d" => false,
-                "tmpblw30d" => false,
-                "tmpabv90d" => false,
-                "tmpblw90d" => false,
-                "prcpabv14d" => false,
-                "prcpblw14d" => false,
-                "prcpabv30d" => false,
-                "prcpblw30d" => false,
-                "prcpabv90d" => false,
-                "prcpblw90d" => false,
-                "precipa_r" => false,
-                "sky_r" => false,
-                "td_r" => false,
-                "temp_r" => false,
-                "wdir_r" => false,
-                "wspd_r" => false,
-                "wwa" => false,
-                "iceaccum" => false,
-                "maxrh" => false,
-                "minrh" => false,
-                "tstmprb" => false,
-            );
-          
-            $hoy = date('Y-m-d');
-            $fechasSiguiente = date('Y-m-d', strtotime('+1 days'));
-        
-            $result = $client->NDFDgen(
-                "35.225",
-                "-120.111",
-                "time-series",
-                $hoy,
-                $fechasSiguiente,
-                "m",
-                $weatherParameters
-            );
-        
-            $xml = simplexml_load_string(trim($result));
-            $array = json_decode(json_encode($xml), true);
-        
-            //print_r($array);
-            
-            foreach ($array['data']['parameters']['temperature']as $key => $value) {
-                     $col[]= $value;
-            }
-        
-            $maxt = $col[0]['value'];
-            $mint = $col[1]['value'][0];
-        
-        
+            // $opts = array('http' => array('user_agent' => 'PHPSoapClient') );
+
+            // $context = stream_context_create($opts);
+
+            // $wsdlUrl = 'https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php?wsdl';
+            // // $wsdlUrl = 'http://toolbox.webservice-energy.org/TOOLBOX/WSDL/AIP3_PV_Impact/AIP3_PV_Impact.wsdl';
+            // // $wsdlUrl = 'http://toolbox.webservice-energy.org/TOOLBOX/WSDL/AIP3_PV_Impact/AIP3_PV_Impact.wsdl';
+
+            // $soapClientOptions = array('stream_context' => $context, 'cache_wsdl' => WSDL_CACHE_NONE);
+
+            // $client = new SoapClient($wsdlUrl, $soapClientOptions);
+            // // var_dump( $client->__getFunctions() ) ;
+
+            // $weatherParameters = array(
+            //     "maxt" => true,
+            //     "mint" => true,
+            //     "temp" => false,
+            //     "dew" => false,
+            //     "pop12" => false,
+            //     "qpf" => false,
+            //     "sky" => false,
+            //     "snow" => false,
+            //     "wspd" => false,
+            //     "wdir" => false,
+            //     "wx" => false,
+            //     "waveh" => false,
+            //     "icons" => true,
+            //     "rh" => false,
+            //     "appt" => false,
+            //     "incw34" => false,
+            //     "incw50" => false,
+            //     "incw64" => false,
+            //     "cumw34" => false,
+            //     "cumw50" => false,
+            //     "cumw64" => false,
+            //     "conhazo" => false,
+            //     "ptornado" => false,
+            //     "phail" => false,
+            //     "ptstmwinds" => false,
+            //     "pxtornado" => false,
+            //     "pxhail" => false,
+            //     "pxtstmwinds" => false,
+            //     "ptotsvrtstm" => false,
+            //     "pxtotsvrtstm" => false,
+            //     "wgust" => false,
+            //     "critfireo" => false,
+            //     "dryfireo" => false,
+            //     "tmpabv14d" => false,
+            //     "tmpblw14d" => false,
+            //     "tmpabv30d" => false,
+            //     "tmpblw30d" => false,
+            //     "tmpabv90d" => false,
+            //     "tmpblw90d" => false,
+            //     "prcpabv14d" => false,
+            //     "prcpblw14d" => false,
+            //     "prcpabv30d" => false,
+            //     "prcpblw30d" => false,
+            //     "prcpabv90d" => false,
+            //     "prcpblw90d" => false,
+            //     "precipa_r" => false,
+            //     "sky_r" => false,
+            //     "td_r" => false,
+            //     "temp_r" => false,
+            //     "wdir_r" => false,
+            //     "wspd_r" => false,
+            //     "wwa" => false,
+            //     "iceaccum" => false,
+            //     "maxrh" => false,
+            //     "minrh" => false,
+            //     "tstmprb" => false,
+            // );
+
+            // $hoy = date('Y-m-d');
+            // $fechasSiguiente = date('Y-m-d', strtotime('+1 days'));
+
+            // $result = $client->NDFDgen(
+            //     "35.225",
+            //     "-120.111",
+            //     "time-series",
+            //     $hoy,
+            //     $fechasSiguiente,
+            //     "m",
+            //     $weatherParameters
+            // );
+
+            // $xml = simplexml_load_string(trim($result));
+            // $array = json_decode(json_encode($xml), true);
+
+            // //print_r($array);
+
+            // foreach ($array['data']['parameters']['temperature']as $key => $value) {
+            //          $col[]= $value;
+            // }
+
+            $maxt = 8 //$col[0]['value'];
+            $mint = 1 //$col[1]['value'][0];
+
+
         } catch (Exception $e) {
            echo $e->getMessage();
             $maxt = '?';
-            $mint = '?'; 
+            $mint = '?';
         }
-        
+
         $datos = array( 'maxt'=>$maxt, 'mint'=>$mint );
         return $datos;
 
