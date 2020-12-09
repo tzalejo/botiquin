@@ -17,9 +17,9 @@
         type="text/css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="/tuBotiquin/public/css/styles.css" rel="stylesheet">
+    <link href="{!! asset('css/styles.css') !!}" rel="stylesheet">
     <!--<link href="../public/css/styles.css" rel="stylesheet" /-->
-    
+
     {{-- Leaflet - map osm --}}
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
@@ -71,7 +71,7 @@
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
                                 href="{{ route('emailcontacto')}}">Contacto</a>
                         </li>
-                    @endcannot    
+                    @endcannot
 
                     @can('esFarmaceutico')
                         <li class="dropdown nav-item mx-0 mx-lg-1">
@@ -114,7 +114,7 @@
         <!-- container principal -->
         <div class="container">
             <!-- Sector que se reemplaza -->
-            @yield('contenido') 
+            @yield('contenido')
         </div>
     </section>
 
@@ -196,8 +196,8 @@
     <!-- Third party plugin JS-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <!-- Contact form JS-->
-    <script src="assets/mail/jqBootstrapValidation.js"></script>
-    <script src="assets/mail/contact_me.js"></script>
+    <script src="{!! asset('assets/mail/jqBootstrapValidation.js') !!}"></script>
+    <script src="{!! asset('assets/mail/contact_me.js') !!}"></script>
     <!-- Core theme JS-->
     <!-- <script src="js/scripts.js"></script> -->
     @yield('zona_js')
