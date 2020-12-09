@@ -102,3 +102,7 @@ Route::delete('borrarStockSucursal/{sucursal}/{medicamento}',[SucursalController
 //Contactar Al Admin
 Route::get('contactaradministrador', [SucursalController::class,'contactarAdmin'])->middleware('roles:es-farmaceutico')->name('contactarAdmin');
 Route::post('enviarmailadministrador', [SucursalController::class,'enviarEmailAdministrador'])->middleware('roles:es-farmaceutico')->name('enviarEmailAdministrador');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return Inertia\Inertia::render('Dashboard');
+})->name('dashboard');
